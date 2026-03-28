@@ -1,19 +1,19 @@
-import * as amqp from 'amqplib';
+import { Channel, ChannelModel, connect } from 'amqplib';
 
 export class RabbitMQConnection {
-  private connection: amqp.Connection | null = null;
-  private channel: amqp.Channel | null = null;
+  private connection: ChannelModel | null = null;
+  private channel: Channel | null = null;
+  private connectionUrl = process.env.RABBITMQ_URL!;
 
   async connect(): Promise<void> {
     try {
-      const url = process.env.RABBITMQ_URL || 'amqp://localhost:5672';
-      this.connection = await amqp.connect(url);
+      this.connection = await connect(this.connectionUrl);
       this.channel = await this.connection.createChannel();
 
       await this.channel.assertExchange('task-events', 'topic', { durable: true });
       await this.channel.assertQueue('analytics-queue', { durable: true });
 
-      // Bind to all task lifecycle events published by the .NET API
+      // list to events published by task-api
       await this.channel.bindQueue('analytics-queue', 'task-events', 'task.created');
       await this.channel.bindQueue('analytics-queue', 'task-events', 'task.updated');
       await this.channel.bindQueue('analytics-queue', 'task-events', 'task.deleted');
@@ -26,7 +26,7 @@ export class RabbitMQConnection {
     }
   }
 
-  getChannel(): amqp.Channel {
+  getChannel(): Channel {
     if (!this.channel) {
       throw new Error('RabbitMQ channel not initialized');
     }
@@ -34,7 +34,16 @@ export class RabbitMQConnection {
   }
 
   async close(): Promise<void> {
-    if (this.channel) await this.channel.close();
-    if (this.connection) await this.connection.close();
+    try {
+      if (this.channel) {
+        await this.channel.close();
+      }
+      if (this.connection) {
+        await this.connection.close();
+      }
+    } catch (e) {
+      console.error("Error while closing RabbitMQ server: ", e);
+      throw e;
+    }
   }
 }

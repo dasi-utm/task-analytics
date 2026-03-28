@@ -15,42 +15,11 @@ services:
     volumes:
       - ..:/app
       - /app/node_modules
-    # depends_on:
-    #   postgres:
-    #     condition: service_healthy
-    #   rabbitmq:
-    #     condition: service_healthy
     restart: unless-stopped
+    networks:
+      - taskflow-net
 
-  # postgres:
-  #   image: postgres:16-alpine
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: taskflow
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 5
-
-  # rabbitmq:
-  #   image: rabbitmq:3-management-alpine
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"   # management UI — dev only
-  #   volumes:
-  #     - rabbitmq_data:/var/lib/rabbitmq
-  #   healthcheck:
-  #     test: ["CMD", "rabbitmq-diagnostics", "ping"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-
-# volumes:
-#   postgres_data:
-#   rabbitmq_data:
+networks:
+  taskflow-net:
+    external: true
+    
