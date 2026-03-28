@@ -1,19 +1,19 @@
 services:
   task-analytics:
     build:
-      context: ..
+      context: ../../
       target: deps
     command: npm run start:dev
     ports:
       - "3003:3003"
-    environment:
+    environment: # move to deployment/config
       NODE_ENV: development
       PORT: "3003"
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/taskflow
+      DATABASE_URL: postgresql://taskmanager:taskmanager_dev@postgres:5432/taskmanager # move everything to .env in config
       RABBITMQ_URL: amqp://rabbitmq:5672
       CORS_ORIGIN: "*"
     volumes:
-      - ..:/app
+      - ../../:/app
       - /app/node_modules
     restart: unless-stopped
     networks:

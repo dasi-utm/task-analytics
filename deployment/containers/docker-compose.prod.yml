@@ -1,11 +1,11 @@
 services:
   task-analytics:
     build:
-      context: ..
+      context: ../../
       target: production
     ports:
       - "3003:3003"
-    environment:
+    environment: # move to deployment/config
       NODE_ENV: production
       PORT: "3003"
       DATABASE_URL: ${DATABASE_URL} # set up as env secret

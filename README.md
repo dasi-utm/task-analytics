@@ -106,7 +106,7 @@ Compose files live in `deployment/`. The `Dockerfile` uses multi-stage builds â€
 **Development** (source mounted, hot reload, RabbitMQ management UI on `:15672`):
 
 ```bash
-docker compose -f deployment/docker-compose.dev.yml up
+docker compose -f deployment/containers/docker-compose.dev.yml up
 ```
 
 **Production** (compiled image, no bind mounts, no management UI):
@@ -115,10 +115,10 @@ docker compose -f deployment/docker-compose.dev.yml up
 # Copy and fill in required secrets first
 cp deployment/.env.prod.example deployment/.env.prod
 
-docker compose -f deployment/docker-compose.prod.yml --env-file deployment/.env.prod up
+docker compose -f deployment/containers/docker-compose.prod.yml --env-file deployment/config/.env.prod up
 ```
 
-Required env vars for prod: `DATABASE_URL`, `RABBITMQ_URL`, `POSTGRES_PASSWORD`, `RABBITMQ_PASSWORD`.
+Required env vars for prod: `DATABASE_URL`, `RABBITMQ_URL`, `RABBITMQ_PASSWORD`.
 
 **Build the production image standalone:**
 
@@ -129,8 +129,6 @@ docker run -p 3003:3003 \
   -e RABBITMQ_URL=amqp://... \
   task-analytics
 ```
-
-To run the full stack with all three services, use the compose files in the root `deployment/` folder.
 
 ---
 
