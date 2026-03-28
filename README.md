@@ -101,13 +101,26 @@ CORS_ORIGIN=*
 
 ## Docker
 
-**Development** (source mounted, hot reload):
+Compose files live in `deployment/`. The `Dockerfile` uses multi-stage builds — `target` selects the environment.
+
+**Development** (source mounted, hot reload, RabbitMQ management UI on `:15672`):
 
 ```bash
-docker compose up
+docker compose -f deployment/docker-compose.dev.yml up
 ```
 
-**Production image only:**
+**Production** (compiled image, no bind mounts, no management UI):
+
+```bash
+# Copy and fill in required secrets first
+cp deployment/.env.prod.example deployment/.env.prod
+
+docker compose -f deployment/docker-compose.prod.yml --env-file deployment/.env.prod up
+```
+
+Required env vars for prod: `DATABASE_URL`, `RABBITMQ_URL`, `POSTGRES_PASSWORD`, `RABBITMQ_PASSWORD`.
+
+**Build the production image standalone:**
 
 ```bash
 docker build --target production -t task-analytics .
@@ -117,7 +130,7 @@ docker run -p 3003:3003 \
   task-analytics
 ```
 
-The `docker-compose.yml` in this directory spins up the service alongside PostgreSQL and RabbitMQ. To run the full stack with all services see the root `docker-compose.yml`.
+To run the full stack with all three services, use the compose files in the root `deployment/` folder.
 
 ---
 
