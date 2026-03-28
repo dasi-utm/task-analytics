@@ -69,12 +69,12 @@ The service will be available at `http://localhost:3003`.
 
 ## Environment variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the deployment/config: (Still todo, right now it auto reads from compose file)
 
 ```env
 PORT=3003
 NODE_ENV=development
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/taskflow
+DATABASE_URL=postgresql://taskmanager:taskmanager_dev@postgres:5432/taskmanager
 RABBITMQ_URL=amqp://localhost:5672
 CORS_ORIGIN=*
 ```
@@ -83,7 +83,7 @@ CORS_ORIGIN=*
 |----------|----------|---------|-------------|
 | `PORT` | No | `3003` | HTTP server port |
 | `NODE_ENV` | No | `development` | Runtime environment |
-| `DATABASE_URL` | Yes | `postgresql://localhost:5432/taskflow` | PostgreSQL connection string |
+| `DATABASE_URL` | Yes | `postgresql://taskmanager:taskmanager_dev@postgres:5432/taskmanager` | PostgreSQL connection string |
 | `RABBITMQ_URL` | Yes | `amqp://localhost:5672` | RabbitMQ connection string |
 | `CORS_ORIGIN` | No | `*` | Allowed CORS origin |
 
@@ -101,7 +101,7 @@ CORS_ORIGIN=*
 
 ## Docker
 
-Compose files live in `deployment/`. The `Dockerfile` uses multi-stage builds — `target` selects the environment.
+Compose files live in `deployment/containers/`. The `Dockerfile` uses multi-stage builds — `target` selects the environment.
 
 **Development** (source mounted, hot reload, RabbitMQ management UI on `:15672`):
 
@@ -113,7 +113,7 @@ docker compose -f deployment/containers/docker-compose.dev.yml up
 
 ```bash
 # Copy and fill in required secrets first
-cp deployment/.env.prod.example deployment/.env.prod
+cp deployment/config/.env.prod.example deployment/config/.env.prod
 
 docker compose -f deployment/containers/docker-compose.prod.yml --env-file deployment/config/.env.prod up
 ```
