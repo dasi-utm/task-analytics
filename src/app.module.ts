@@ -5,6 +5,7 @@ import { RabbitMQModule } from './config/rabbitmq.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ConsumerModule } from './consumers/consumer.module';
 import { SchedulersModule } from './schedulers/schedulers.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SchedulersModule } from './schedulers/schedulers.module';
     AnalyticsModule,
     ConsumerModule,
     SchedulersModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
