@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthCheckService, HealthCheck, TypeOrmHealthIndicator } from '@nestjs/terminus';
+import { HealthCheckService, HealthCheck } from '@nestjs/terminus';
 import { RabbitHealthIndicator } from './rabbitmq.health';
+import { DatabaseHealthIndicator } from './database.health';
 
 @Controller('health')
 export class HealthController {
     constructor(
     private readonly health: HealthCheckService,
-    private readonly db: TypeOrmHealthIndicator,
+    private readonly db: DatabaseHealthIndicator,
     private readonly rabbit: RabbitHealthIndicator,
     ) {}
 
@@ -14,7 +15,7 @@ export class HealthController {
     @HealthCheck()
     check() {
     return this.health.check([
-        () => this.db.pingCheck('database'),
+        () => this.db.isHealthy('database'),
         () => this.rabbit.isHealthy('rabbitmq'),
     ]);
     }
