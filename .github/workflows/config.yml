@@ -13,7 +13,7 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GAR_LOCATION: europe-west1
   GAR_REPOSITORY: services-repo
-  IMAGE_NAME: task-analytics-api
+  IMAGE_NAME: task-analytics
 
 jobs:
   deploy:
@@ -58,5 +58,5 @@ jobs:
 
       - name: Deploy image
         run: |
-          kubectl set image deployment/task-analytics-api task-analytics-api=$IMAGE_URI -n services
-          kubectl rollout status deployment/task-analytics-api -n services
+          kubectl set image deployment/task-analytics task-analytics=$IMAGE_URI -n services
+          kubectl rollout status deployment/task-analytics -n services
