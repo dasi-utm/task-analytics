@@ -12,7 +12,7 @@ export class RabbitMQConnection {
 
       await this.channel.assertExchange('task-events', 'topic', { durable: true });
       await this.channel.assertQueue('analytics-queue', { durable: true });
-
+      await this.channel.assertQueue('health_check_queue', { durable: true });
       // list to events published by task-api
       await this.channel.bindQueue('analytics-queue', 'task-events', 'task.created');
       await this.channel.bindQueue('analytics-queue', 'task-events', 'task.updated');
